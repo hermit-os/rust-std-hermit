@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  RUSTUP_TOOLCHAIN: nightly-2022-10-19
+
+jobs:
+  dist:
+    name: Build rust-std-hermit distribution artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get rust toolchain commit hash
+        id: commit-hash
+        run: |
+          rustc --version -v
+          COMMIT_HASH=$(rustc --version -v | grep "commit-hash: ")
+          COMMIT_HASH=${COMMIT_HASH#"commit-hash: "}
+          echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_OUTPUT
+      - name: Checkout rust
+        uses: actions/checkout@v3
+        with:
+          repository: rust-lang/rust
+          ref: ${{ steps.commit-hash.outputs.COMMIT_HASH }}
+      - name: Checkout rust-std-hermit
+        uses: actions/checkout@v3
+        with:
+          path: rust-std-hermit
+      - name: Build rust-std distribution artifacts
+        run: ./x.py dist --config rust-std-hermit/rust-config.toml rust-std
+      - name: Extract distribution artifacts
+        run: |
+          tar -xvf rust-std-nightly-x86_64-unknown-hermit.tar.gz
+          mv rust-std-nightly-x86_64-unknown-hermit rust-std-${{ env.RUSTUP_TOOLCHAIN }}-x86_64-unknown-hermit
+        working-directory: ./build/dist
+      - name: Modify distribution artifacts
+        run: |
+          mv install.sh rust-install.sh
+          envsubst '$HERMIT_TOOLCHAIN' < ../../../rust-std-hermit/install-template.sh > install.sh
+          chmod +x install.sh
+        env:
+          HERMIT_TOOLCHAIN: ${{ env.RUSTUP_TOOLCHAIN }}
+        working-directory: ./build/dist/rust-std-${{ env.RUSTUP_TOOLCHAIN }}-x86_64-unknown-hermit
+      - name: Compress distribution artifacts
+        run: tar -cavf rust-std-${{ env.RUSTUP_TOOLCHAIN }}-x86_64-unknown-hermit{.tar.gz,}
+        working-directory: ./build/dist
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/dist/rust-std-${{ env.RUSTUP_TOOLCHAIN }}-x86_64-unknown-hermit.tar.gz
+          tag_name: ${{ env.RUSTUP_TOOLCHAIN }}

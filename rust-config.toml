@@ -1,0 +1,14 @@
+changelog-seen = 2
+
+[llvm]
+download-ci-llvm = true
+
+[build]
+target = ["x86_64-unknown-hermit"]
+
+[rust]
+channel = "nightly"
+deny-warnings = false
+
+[dist]
+compression-formats = ["gz"]
