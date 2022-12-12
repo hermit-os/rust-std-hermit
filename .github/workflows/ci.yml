@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  RUSTUP_TOOLCHAIN: nightly-2022-10-19
+  RUSTUP_TOOLCHAIN: nightly-2022-12-12
 
 jobs:
   dist:
