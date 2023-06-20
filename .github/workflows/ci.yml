@@ -6,13 +6,17 @@ on:
       - main
 
 env:
-  RUSTUP_TOOLCHAIN: nightly-2022-12-12
+  RUSTUP_TOOLCHAIN: 1.70.0
 
 jobs:
   dist:
     name: Build rust-std-hermit distribution artifacts
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.RUSTUP_TOOLCHAIN }}
       - name: Get rust toolchain commit hash
         id: commit-hash
         run: |
@@ -25,30 +29,18 @@ jobs:
         with:
           repository: rust-lang/rust
           ref: ${{ steps.commit-hash.outputs.COMMIT_HASH }}
-      - name: Checkout rust-std-hermit
-        uses: actions/checkout@v3
-        with:
-          path: rust-std-hermit
+          path: rust
       - name: Build rust-std distribution artifacts
-        run: ./x.py dist --config rust-std-hermit/rust-config.toml rust-std
-      - name: Extract distribution artifacts
+        run: ./x.py dist --config ../rust-config.toml rust-std
+        working-directory: ./rust
+      - name: Create distribution artifacts
         run: |
-          tar -xvf rust-std-nightly-x86_64-unknown-hermit.tar.gz
-          mv rust-std-nightly-x86_64-unknown-hermit rust-std-${{ env.RUSTUP_TOOLCHAIN }}-x86_64-unknown-hermit
-        working-directory: ./build/dist
-      - name: Modify distribution artifacts
-        run: |
-          mv install.sh rust-install.sh
-          envsubst '$HERMIT_TOOLCHAIN' < ../../../rust-std-hermit/install-template.sh > install.sh
-          chmod +x install.sh
-        env:
-          HERMIT_TOOLCHAIN: ${{ env.RUSTUP_TOOLCHAIN }}
-        working-directory: ./build/dist/rust-std-${{ env.RUSTUP_TOOLCHAIN }}-x86_64-unknown-hermit
-      - name: Compress distribution artifacts
-        run: tar -cavf rust-std-${{ env.RUSTUP_TOOLCHAIN }}-x86_64-unknown-hermit{.tar.gz,}
-        working-directory: ./build/dist
+          ./dist.sh ${{ env.RUSTUP_TOOLCHAIN }} x86_64-unknown-hermit
+          ./dist.sh ${{ env.RUSTUP_TOOLCHAIN }} aarch64-unknown-hermit
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: build/dist/rust-std-${{ env.RUSTUP_TOOLCHAIN }}-x86_64-unknown-hermit.tar.gz
+          files: |
+            rust/build/dist/rust-std-${{ env.RUSTUP_TOOLCHAIN }}-x86_64-unknown-hermit.tar.gz
+            rust/build/dist/rust-std-${{ env.RUSTUP_TOOLCHAIN }}-aarch64-unknown-hermit.tar.gz
           tag_name: ${{ env.RUSTUP_TOOLCHAIN }}

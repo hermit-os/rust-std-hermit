@@ -4,11 +4,13 @@ changelog-seen = 2
 download-ci-llvm = true
 
 [build]
-target = ["x86_64-unknown-hermit"]
+target = [
+    "x86_64-unknown-hermit",
+    "aarch64-unknown-hermit",
+]
 
 [rust]
-channel = "nightly"
-deny-warnings = false
+channel = "stable"
 
 [dist]
 compression-formats = ["gz"]
