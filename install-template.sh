@@ -11,7 +11,7 @@ fi
 echo "Installing toolchain $HERMIT_TOOLCHAIN with rustup."
 rustup toolchain install $HERMIT_TOOLCHAIN
 
-RUSTC_SYSROOT="$(rustc +$HERMIT_TOOLCHAIN --print=sysroot)"
+RUSTC_SYSROOT="$(rustc +$HERMIT_TOOLCHAIN --print=sysroot | tr '\' '/')"
 SCRIPT_DIR="${0%/*}"
 echo "Installing rust-std-hermit to $RUSTC_SYSROOT"
 "$SCRIPT_DIR/rust-install.sh" --prefix="$RUSTC_SYSROOT" --disable-ldconfig
