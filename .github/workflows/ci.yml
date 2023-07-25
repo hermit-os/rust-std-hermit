@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  RUSTUP_TOOLCHAIN: 1.70.0
+  RUSTUP_TOOLCHAIN: 1.71.0
 
 jobs:
   dist:
@@ -14,22 +14,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ env.RUSTUP_TOOLCHAIN }}
-      - name: Get rust toolchain commit hash
-        id: commit-hash
-        run: |
-          rustc --version -v
-          COMMIT_HASH=$(rustc --version -v | grep "commit-hash: ")
-          COMMIT_HASH=${COMMIT_HASH#"commit-hash: "}
-          echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_OUTPUT
       - name: Checkout rust
         uses: actions/checkout@v3
         with:
-          repository: rust-lang/rust
-          ref: ${{ steps.commit-hash.outputs.COMMIT_HASH }}
+          repository: hermitcore/rust
+          ref: hermit-${{ env.RUSTUP_TOOLCHAIN }}
+          fetch-depth: 0
           path: rust
+      - run: git reset ${{ env.RUSTUP_TOOLCHAIN }}
+        working-directory: ./rust
       - name: Build rust-std distribution artifacts
         run: ./x.py dist --config ../rust-config.toml rust-std
         working-directory: ./rust
