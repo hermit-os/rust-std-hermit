@@ -13,9 +13,9 @@ jobs:
     name: Build rust-std-hermit distribution artifacts
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Checkout rust
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: hermitcore/rust
           ref: hermit-${{ env.RUSTUP_TOOLCHAIN }}
