@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  RUSTUP_TOOLCHAIN: 1.72.0
+  RUSTUP_TOOLCHAIN: 1.72.1
 
 jobs:
   dist:
