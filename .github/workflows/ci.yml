@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  RUSTUP_TOOLCHAIN: 1.72.1
+  RUSTUP_TOOLCHAIN: 1.73.0
 
 jobs:
   dist:
@@ -17,23 +17,22 @@ jobs:
       - name: Checkout rust
         uses: actions/checkout@v4
         with:
-          repository: hermitcore/rust
-          ref: hermit-${{ env.RUSTUP_TOOLCHAIN }}
-          fetch-depth: 0
+          repository: rust-lang/rust
+          ref: ${{ env.RUSTUP_TOOLCHAIN }}
           path: rust
-      - run: git reset ${{ env.RUSTUP_TOOLCHAIN }}
-        working-directory: ./rust
       - name: Build rust-std distribution artifacts
         run: ./x.py dist --config ../rust-config.toml rust-std
         working-directory: ./rust
       - name: Create distribution artifacts
         run: |
-          ./dist.sh ${{ env.RUSTUP_TOOLCHAIN }} x86_64-unknown-hermit
           ./dist.sh ${{ env.RUSTUP_TOOLCHAIN }} aarch64-unknown-hermit
+          ./dist.sh ${{ env.RUSTUP_TOOLCHAIN }} riscv64gc-unknown-hermit
+          ./dist.sh ${{ env.RUSTUP_TOOLCHAIN }} x86_64-unknown-hermit
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            rust/build/dist/rust-std-${{ env.RUSTUP_TOOLCHAIN }}-x86_64-unknown-hermit.tar.gz
             rust/build/dist/rust-std-${{ env.RUSTUP_TOOLCHAIN }}-aarch64-unknown-hermit.tar.gz
+            rust/build/dist/rust-std-${{ env.RUSTUP_TOOLCHAIN }}-riscv64gc-unknown-hermit.tar.gz
+            rust/build/dist/rust-std-${{ env.RUSTUP_TOOLCHAIN }}-x86_64-unknown-hermit.tar.gz
           tag_name: ${{ env.RUSTUP_TOOLCHAIN }}
