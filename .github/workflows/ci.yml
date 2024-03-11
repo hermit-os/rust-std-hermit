@@ -29,7 +29,7 @@ jobs:
           ./dist.sh ${{ env.RUSTUP_TOOLCHAIN }} riscv64gc-unknown-hermit
           ./dist.sh ${{ env.RUSTUP_TOOLCHAIN }} x86_64-unknown-hermit
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             rust/build/dist/rust-std-${{ env.RUSTUP_TOOLCHAIN }}-aarch64-unknown-hermit.tar.gz
