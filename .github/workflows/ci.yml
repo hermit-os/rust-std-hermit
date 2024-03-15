@@ -6,6 +6,7 @@ on:
       - main
 
 env:
+  GH_TOKEN: ${{ github.token }}
   RUSTUP_TOOLCHAIN: 1.76.0
 
 jobs:
@@ -28,11 +29,4 @@ jobs:
           ./dist.sh ${{ env.RUSTUP_TOOLCHAIN }} aarch64-unknown-hermit
           ./dist.sh ${{ env.RUSTUP_TOOLCHAIN }} riscv64gc-unknown-hermit
           ./dist.sh ${{ env.RUSTUP_TOOLCHAIN }} x86_64-unknown-hermit
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            rust/build/dist/rust-std-${{ env.RUSTUP_TOOLCHAIN }}-aarch64-unknown-hermit.tar.gz
-            rust/build/dist/rust-std-${{ env.RUSTUP_TOOLCHAIN }}-riscv64gc-unknown-hermit.tar.gz
-            rust/build/dist/rust-std-${{ env.RUSTUP_TOOLCHAIN }}-x86_64-unknown-hermit.tar.gz
-          tag_name: ${{ env.RUSTUP_TOOLCHAIN }}
+      - run: gh release create ${{ env.RUSTUP_TOOLCHAIN }} --title ${{ env.RUSTUP_TOOLCHAIN }} rust/build/dist/*.tar.gz
