@@ -7,7 +7,7 @@ on:
 
 env:
   GH_TOKEN: ${{ github.token }}
-  RUSTUP_TOOLCHAIN: 1.80.1
+  RUSTUP_TOOLCHAIN: 1.81.0
 
 jobs:
   dist:
