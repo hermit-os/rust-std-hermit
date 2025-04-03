@@ -7,12 +7,19 @@ on:
 
 env:
   GH_TOKEN: ${{ github.token }}
-  RUSTUP_TOOLCHAIN: 1.85.0
+  RUSTUP_TOOLCHAIN: 1.86.0
 
 jobs:
   dist:
     name: Build rust-std-hermit distribution artifacts
     runs-on: ubuntu-latest
+    env:
+      # FIXME: this is a workaround for
+      # thread 'main' panicked at src/build_helper/src/git.rs:145:54:
+      # called `Result::unwrap()` on an `Err` value: "Cannot find any suitable upstream master branch"
+      # https://github.com/rust-lang/rust/blob/1.86.0/src/build_helper/src/git.rs#L145
+      CI_JOB_NAME: dist-hermit
+      TOOLSTATE_REPO: "https://github.com/rust-lang-nursery/rust-toolstate"
     steps:
       - uses: actions/checkout@v4
       - name: Checkout rust
@@ -21,6 +28,7 @@ jobs:
           repository: rust-lang/rust
           ref: ${{ env.RUSTUP_TOOLCHAIN }}
           path: rust
+          submodules: true
       - name: Install arch-specific GCC variants
         run: |
           sudo apt-get update
