@@ -7,7 +7,7 @@ on:
 
 env:
   GH_TOKEN: ${{ github.token }}
-  RUSTUP_TOOLCHAIN: 1.87.0
+  RUSTUP_TOOLCHAIN: 1.88.0
 
 jobs:
   dist:
@@ -28,13 +28,14 @@ jobs:
           repository: rust-lang/rust
           ref: ${{ env.RUSTUP_TOOLCHAIN }}
           path: rust
+          fetch-depth: 5
           submodules: true
       - name: Install arch-specific GCC variants
         run: |
           sudo apt-get update
           sudo apt-get install gcc-aarch64-linux-gnu gcc-riscv64-linux-gnu gcc-x86-64-linux-gnu
       - name: Build rust-std distribution artifacts
-        run: ./x dist --config ../rust-config.toml rust-std
+        run: ./x dist --config ../rust-config.toml rust-std --ci false
         working-directory: ./rust
         env:
           CC_aarch64_unknown_hermit: aarch64-linux-gnu-gcc

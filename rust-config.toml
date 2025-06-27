@@ -1,7 +1,7 @@
 change-id = 121754
 
 [llvm]
-download-ci-llvm = "if-unchanged"
+download-ci-llvm = true
 
 [build]
 target = [
