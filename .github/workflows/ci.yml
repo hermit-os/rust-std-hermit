@@ -34,8 +34,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install gcc-aarch64-linux-gnu gcc-riscv64-linux-gnu gcc-x86-64-linux-gnu
+      - run: cp bootstrap.toml rust/
       - name: Build rust-std distribution artifacts
-        run: ./x dist --config ../rust-config.toml rust-std --ci false
+        run: ./x dist rust-std --ci false
         working-directory: ./rust
         env:
           CC_aarch64_unknown_hermit: aarch64-linux-gnu-gcc
