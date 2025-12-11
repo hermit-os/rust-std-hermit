@@ -21,9 +21,9 @@ jobs:
       CI_JOB_NAME: dist-hermit
       TOOLSTATE_REPO: "https://github.com/rust-lang-nursery/rust-toolstate"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Checkout rust
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: rust-lang/rust
           ref: ${{ env.RUSTUP_TOOLCHAIN }}
