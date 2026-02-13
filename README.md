@@ -8,11 +8,11 @@ This repository provides installable distribution artifacts of `rust-std` for th
 
 ## Usage
 
-1.  Download and extract the artifact from the latest [release].
+1.  Download the artifact from the latest [release].
 
     [release]: https://github.com/hermitcore/rust-std-hermit/releases
 
-2.  Run `./install.sh`
+2.  Extract the archive, navigate in bash to the extracted folder and run `./install.sh`
 
     The install script will install the `rust-std-hermit` component to the corresponding rustup toolchain.
 
