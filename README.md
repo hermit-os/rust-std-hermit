@@ -12,11 +12,15 @@ This repository provides installable distribution artifacts of `rust-std` for th
 
     [release]: https://github.com/hermitcore/rust-std-hermit/releases
 
-2.  Run `./install.sh`
+    For example: `rust-std-1.xx.0-x86_64-unknown-hermit.tar.gz`
+    
+2.  If on Windows. Open GitHub bash and go to `rust-std-1.xx.0-x86_64-unknown-hermit` folder.
+
+3.  Run `./install.sh`
 
     The install script will install the `rust-std-hermit` component to the corresponding rustup toolchain.
 
-3.  You can now build Rust applications with the corresponding toolchain for the installed `hermit` target without using `build-std`.
+4.  You can now build Rust applications with the corresponding toolchain for the installed `hermit` target without using `build-std`.
 
 ## License
 
